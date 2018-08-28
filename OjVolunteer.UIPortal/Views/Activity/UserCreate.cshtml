@@ -1,0 +1,275 @@
+﻿@model OjVolunteer.Model.Activity
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>瓯江义工网</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link href="~/Content/oj/css/bootstrap.css" rel="stylesheet" />
+    <link href="~/Content/layui/css/layui.css" rel="stylesheet" />
+    <link href="~/Content/oj/css/main.css" rel="stylesheet" />
+    <style>
+
+        .layui-upload-img {
+            width: 200px;
+            height: 130px;
+        }
+
+        .layui-code, .layui-upload-list {
+            position: absolute;
+            top: -340px;
+            left: -585px;
+        }
+        .layui-form-pane .layui-form-label{
+            overflow:inherit;
+        }
+        .centerBtn{
+            text-align:center;
+            padding-bottom:20px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav class="top">
+            <p>活动发布</p>
+        </nav>
+    </header>
+
+    <div class="release">
+        <form class="layui-form layui-form-pane" action="" id="form1">
+            <input hidden name="ActivityManagerID" value="@ViewBag.UserId" />
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">活动名称</label>
+                <div class="layui-input-block">
+                    @Html.EditorFor(model => model.ActivityName, new { htmlAttributes = new { @class = "layui-input", lay_verify = "required|actionName" } })
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">活动类型</label>
+                <div class="layui-input-block">
+                    @Html.DropDownList("ActivityTypeID", null, new { htmlAttributes = new { @lay_verify = "required" } })
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">活动地址</label>
+                <div class="layui-input-block">
+                    @Html.EditorFor(model => model.ActivityAddress, new { htmlAttributes = new { @class = "layui-input", lay_verify = "required", id = "suggestId", size = "20", placeholder = "请填写活动地址" } })
+                    @Html.HiddenFor(model => model.ActivityAddressX)
+                    @Html.HiddenFor(model => model.ActivityAddressY)
+                </div>
+                <div class="layui-inline acStart-left">
+                    <div id="address" style="overflow:hidden;width:190px;white-space:nowrap;text-overflow:ellipsis;"></div>
+                    <div id="searchResultPanel" style="border:1px solid #C0C0C0;width:150px;height:auto; display:none;"></div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">详细地址</label>
+                <div class="layui-input-block">
+                    @Html.EditorFor(model => model.ActivityAddressDetail, new { htmlAttributes = new { @class = "layui-input", lay_verify = "required|moreAddress" ,maxlegth = "50" ,placeholder = "请补充上列活动地址" } })
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">报名开始时间</label>
+                <div class="layui-input-block">
+                    @Html.EditorFor(model => model.ActivityEnrollStart, new { htmlAttributes = new { @class = "layui-input", id = "enroll-start", lay_verify = "required" } })
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">报名结束时间</label>
+                <div class="layui-input-block">
+                    @Html.EditorFor(model => model.ActivityEnrollEnd, new { htmlAttributes = new { @class = "layui-input", id = "enroll-end", placeholder = "报名结束时间应早于活动开始时间" , lay_verify = "required"} })
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">活动开始时间</label>
+                <div class="layui-input-block">
+                    @Html.EditorFor(model => model.ActivityStart, new { htmlAttributes = new { @class = "layui-input", id = "start", lay_verify = "required" } })
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">活动结束时间</label>
+                <div class="layui-input-block">
+                    @Html.EditorFor(model => model.ActivityEnd, new { htmlAttributes = new { @class = "layui-input", id = "end", lay_verify = "required" } })
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label ">人数上限</label>
+                <div class="layui-input-block">
+                    @Html.EditorFor(model => model.ActivityPrediNum, new { htmlAttributes = new { @class = "layui-input", lay_verify = "required|joinNumber|MaxNumber" } })
+                </div>
+            </div>
+
+
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="width:100%;text-align:left;margin-bottom:-1px;">活动详情</label>
+                <textarea name="ActivityContent" required lay-verify="required" placeholder="请输入活动具体描述" class="layui-textarea" style="height:200px;"></textarea>
+            </div>
+
+
+                <div class="centerBtn">
+                    <button class="layui-btn" lay-submit lay-filter="*" style="background-color:#C62F2F">发布</button>
+                    <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                </div>
+        </form>
+        <div id="l-map"></div>
+    </div>
+
+
+
+
+    <!-- 返回上一层组件 -->
+    <a href="javascript:history.go(-1)" class="header-back">
+        <span class="glyphicon glyphicon-chevron-left"></span>
+    </a>
+    <script type="text/javascript" src="https://api.map.baidu.com/api?v=2.0&ak=HisYFGGE2IDgsNH7xUAEQfExLIxpWwDh&s=1"></script>
+    <script src="~/Content/oj/js/jquery-1.12.4.js"></script>
+    <script src="~/Content/layui/layui.js"></script>
+    <script src="~/Content/layui/layui.all.js"></script>
+    <script src="~/Content/oj/js/main.js"></script>
+    <script src="~/Content/oj/js/check.js"></script>
+    <script type="text/javascript">
+        //时间控件
+        layui.use('laydate', function () {
+            var laydate = layui.laydate;
+            laydate.render({
+                elem: '#enroll-start'
+                , type: 'datetime'
+            });
+
+            laydate.render({
+                elem: '#enroll-end'
+                , type: 'datetime'
+            });
+            laydate.render({
+                elem: '#start'
+                , type: 'datetime'
+            });
+
+            laydate.render({
+                elem: '#end'
+                , type: 'datetime'
+            });
+        });
+
+        function checktime() {
+            var EnrollStart = $('#enroll-start').val();// 获得报名开始对象
+            var EnrollEnd = $('#enroll-end').val();//	获得报名结束对象
+            var AcStart = $('#start').val();//	获得活动开始对象
+            var AcEnd = $('#end').val();//	获得活动结束对象
+            console.log(EnrollStart);
+            console.log(EnrollEnd);
+            console.log(AcStart);
+            console.log(AcEnd);
+            if (EnrollStart > EnrollEnd) {
+                layer.alert('报名开始时间应早于报名结束时间');
+                return false;
+            }
+            else if (EnrollEnd > AcStart) {
+                layer.alert('报名时间应早于活动时间');
+                return false
+            }
+            else if (AcStart > AcEnd) {
+                layer.alert('活动开始时间应早于活动结束时间');
+                return false;
+            }
+            else {
+                return true;
+            }
+        }
+
+        function BindSubmit() {
+            //layedit.sync(index);
+            if (checktime()) {
+                layer.confirm('确定发布活动吗？', {
+                    btn: ['确定', '取消'] //按钮
+                }, function () {
+                    $.post("/Activity/Create", $("#form1").serializeArray(), function (data) {
+                        if (data["msg"] == "success") {
+                            layer.msg('申请成功，请等待审核！', { icon: 1 });
+                        } else {
+                            layer.msg('出现错误,请稍后再试！', { icon: 2 });
+                        }
+                    });
+                }, function () {
+                    layer.msg('已取消');
+                });
+            }
+        }
+        layui.use('form', function () {
+            var form = layui.form;
+
+            form.on('submit(*)', function (data) {
+                BindSubmit();
+                return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+            });
+        });
+
+        // 百度地图API功能
+        function G(id) {
+            return document.getElementById(id);
+        }
+        var map = new BMap.Map("l-map");
+        map.centerAndZoom("温州", 12);
+
+        var ac = new BMap.Autocomplete(    //建立一个自动完成的对象
+            {
+                "input": "suggestId"
+                , "location": map
+            });
+        ac.addEventListener("onhighlight", function (e) {  //鼠标放在下拉列表上的事件
+            var str = "";
+            var _value = e.fromitem.value;
+            var value = "";
+            if (e.fromitem.index > -1) {
+                value = _value.province + _value.city + _value.district + _value.street + _value.business;
+            }
+            str = "FromItem<br />index = " + e.fromitem.index + "<br />value = " + value;
+
+            value = "";
+            if (e.toitem.index > -1) {
+                _value = e.toitem.value;
+                value = _value.province + _value.city + _value.district + _value.street + _value.business;
+            }
+            str += "<br />ToItem<br />index = " + e.toitem.index + "<br />value = " + value;
+            G("searchResultPanel").innerHTML = str;
+        });
+
+        var myValue;
+        ac.addEventListener("onconfirm", function (e) {    //鼠标点击下拉列表后的事件
+            var _value = e.item.value;
+            myValue = _value.province + _value.city + _value.district + _value.street + _value.business;
+            G("searchResultPanel").innerHTML = "onconfirm<br />index = " + e.item.index + "<br />myValue = " + myValue;
+
+            setPlace(myValue);
+        });
+        function setPlace(myValue) {
+            map.clearOverlays();    //清除地图上所有覆盖物
+            function myFun() {
+                var pp = local.getResults().getPoi(0).point;    //获取第一个智能搜索的结果
+
+                var poi = local.getResults().getPoi(0);
+                var lng = String(pp.lng);
+                var lat = String(pp.lat);
+                $("#ActivityAddressX").val(lng.substring(0, lng.indexOf(".") + 3));
+                $("#ActivityAddressY").val(lat.substring(0, lng.indexOf(".") + 3));
+
+                map.centerAndZoom(pp, 18);
+                map.addOverlay(new BMap.Marker(pp));    //添加标注
+            }
+            var local = new BMap.LocalSearch(map, { //智能搜索
+                onSearchComplete: myFun
+            });
+            local.search(myValue);
+        }
+
+
+    </script>
+</body>
+</html>

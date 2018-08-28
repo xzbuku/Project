@@ -1,0 +1,185 @@
+﻿
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>大学生志愿服务认证中心</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link href="~/Content/oj/css/bootstrap.css" rel="stylesheet" />
+    <link href="~/Content/layui/css/layui.css" rel="stylesheet" />
+    <link href="~/Content/oj/css/iconfont.css" rel="stylesheet" />
+    <link href="~/Content/oj/css/main.css" rel="stylesheet" />
+
+</head>
+<body>
+
+    <header>
+        <nav class="top">
+            @{ if (@ViewBag.UserId == @ViewBag.LUserId)
+        {
+            <p>我的心得</p>
+}
+else
+{
+        <p>他的心得</p>
+}
+            }
+        </nav>
+    </header>
+    <div class="myfeel">
+            <ul id="feelul" class="myfeel-list"></ul>
+    </div>
+
+
+    <a href="javascript:history.go(-1)" class="write-back">
+        <span class="glyphicon glyphicon-chevron-left"></span>
+    </a>
+    <div class="topback" id="topback">
+        <i class="iconfont icon-less"></i>
+    </div>
+
+
+    <script src="~/Content/oj/js/jquery-1.12.4.js"></script>
+    <script src="~/Content/oj/js/bootstrap.min.js"></script>
+    <script src="~/Content/layui/layui.all.js"></script>
+    <script src="~/Content/oj/js/admin.js"></script>
+    <script src="~/Scripts/App/datapattern.js"></script>
+    <script type="text/javascript">
+        var topback = $('#topback');
+        // 返回顶部按钮点击事件
+        topback.on("click", function () {
+            $('html,body').animate({
+                scrollTop: 0
+            }, 200)
+
+        })
+        $(window).on('scroll', function () {
+            if ($(window).scrollTop() > 200)
+                topback.fadeIn();
+            else
+                topback.fadeOut();
+        })
+        $(window).trigger('scroll');
+        function Photos() {
+            layer.photos({
+                photos: '.fell-item-imgs'
+                , anim: 5
+            });
+        }
+
+        $(function () {
+            GetTalksData(1, 5);
+        });
+
+        function GetTalksData(pageIndex, pageSize) {
+            $.post("/Talks/TalkOfUserData", { userInfoId:@ViewBag.UserId, pageIndex: pageIndex, pageSize: pageSize }, function (data) {
+                $("#btnevent").remove();
+                if (data["msg"] == "success") {
+                    for (var i in data["data"]) {
+                        var temp = data["data"][i];
+                        //上
+                        var li = $("<li class='myfeel-item'></li>");
+                        if (temp.Status == 0) {
+                            if (@ViewBag.UserId== @ViewBag.LUserId) {
+                                var i = $("<i class='iconfont icon-shenhetongguo feel-item-icon icon-green'></i>");
+                                li.append(i);
+                            }
+                        } else if (temp.Status == 1||temp.Status == 3) {
+                            var i = $("<i class='iconfont icon-shenheshibai feel-item-icon icon-gray'></i>");
+                            li.append(i);
+                        } else if (temp.Status == 2) {
+                            var i = $("<i class='iconfont icon-shenhe-copy feel-item-icon'></i>");
+                            li.append(i);
+                        }
+                        var li_div = $("<div class='feel-item-info clearfix'></div>");
+                        //头像
+                        var li_div_a = $("<a class='info-img'></a>");
+                        var li_div_a_img = $("<img/>");
+                        li_div_a_img.attr("src", temp.Icon);
+                        li_div_a.append(li_div_a_img);
+                        //姓名 时间
+                        var li_div_div = $("<div class='info-name'></div>");
+                        var li_div_div_a = $("<a></a>");
+                        li_div_div_a.text(temp.ShowName);
+                        var li_div_div_p = $("<p></p>");
+                        var li_div_div_p_span = $("<span class='feeltime'></span>");
+                        li_div_div_p_span.text(TimeFormat(temp.CreateTime));
+                        li_div_div_p.append(li_div_div_p_span);
+                        li_div_div.append(li_div_div_a);
+                        li_div_div.append(li_div_div_p);
+
+                        //点赞数
+                        var li_div_i_Str = null;
+                        if (temp.Favors) {
+                            li_div_i_Str = "<i class='layui-icon zan yiZan'>&#xe6c6;</i>";
+                        } else {
+                            li_div_i_Str = "<i class='layui-icon zan' >&#xe6c6;</i>";
+                        }
+                        var li_div_i = $(li_div_i_Str);
+                        li_div_i.attr("tId", temp.TalkID);
+                        var li_div_i_span = $("<span></span>");
+                        li_div_i_span.text(temp.TalkFavorsNum);
+                        li_div_i.append(li_div_i_span);
+                        li_div.append(li_div_a);
+                        li_div.append(li_div_div);
+                        li_div.append(li_div_i);
+                        //文本
+                        var li_cdiv = $("<div class='fell-item-content'></div>");
+                        var li_cdiv_p = $("<p></p>");
+                        li_cdiv_p.text(temp.TalkContent);
+                        li_cdiv.append(li_cdiv_p);
+                        //图片
+                        var li_bdiv = $("<div class='layui-row fell-item-imgs'></div>");
+                        for (var j in temp.ImagePath) {
+                            var img = temp.ImagePath[j];
+                            var li_bdiv_div = $("<div class='layui-col-xs4'></div>");
+                            var li_bdiv_div_div = $("<div class='box'></div>");
+                            var li_bdiv_div_div_img = $("<img>");
+                            li_bdiv_div_div_img.attr("src", img);
+                            li_bdiv_div_div.append(li_bdiv_div_div_img);
+                            li_bdiv_div.append(li_bdiv_div_div);
+                            li_bdiv.append(li_bdiv_div);
+                        }
+
+                        li.append(li_div);
+                        li.append(li_cdiv);
+                        li.append(li_bdiv);
+
+
+                        $("#feelul").append(li);
+                    }
+                    var btn_li = $("<li style='text-align:center;'></li>");
+                    var btn_input = $("<input type='button' id='btnevent' value='查看更多' style='border:none;background:#eee;'/>");
+                    pageIndex++;
+                    btn_input.attr("pageIndex", pageIndex);
+                    btn_li.append(btn_input);
+                    $("#feelul").append(btn_li);
+                    Photos();
+                    BindActivtyListClickEvent();
+                } else {
+                    var btn_li = $("<li style='text-align:center;></li>");
+                    btn_li.text("无新内容");
+                    $("#feelul").append(btn_li);
+                }
+            });
+
+        }
+
+        //查看更多活动按钮绑定
+        function BindActivtyListClickEvent() {
+            $("#btnevent").click(function () {
+                var pageIndex = parseInt($("#btnevent").attr("pageIndex"));
+                var pageSize = 5;
+                GetTalksData(pageIndex, pageSize);
+            });
+        }
+
+        //时间戳转为时间
+        function TimeFormat(value) {
+            return new Date(parseInt(value.replace("/Date(", "").replace(")/", ""), 10)).pattern("yyyy-MM-dd HH:mm");
+        }
+
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,156 @@
+﻿@{
+    Layout = "~/Views/Shared/User_Layout.cshtml";
+}
+<div class="action-bg">
+    <header>
+        <nav class="top">
+            <p>活动列表</p>
+        </nav>
+    </header>
+    <nav class="classnav">
+        <form class="layui-form" " action="">
+            <div class="layui-form-item">
+                @Html.DropDownList("ActivityTypeID", null, "全部活动", new { lay_filter="aihao", onchange="selectchange()"})
+            </div>
+        </form>
+
+    </nav>
+
+    <div class="acbox">
+        <ul id="actul" class="ac-list">
+        </ul>
+    </div>
+</div>
+
+@section Script{
+    <script type="text/javascript">
+        layui.use('form', function () {
+            var form = layui.form;
+            
+            form.on('select(aihao)', function (data) {
+                $("li").remove();
+                var typeId = $("select option:selected").val();
+                GetActivityData(1, 5, typeId);
+            });     
+        });
+
+        $(function () {
+            GetActivityData(1, 5);
+        });
+
+        //加载活动数据
+        function GetActivityData(pageIndex, pageSize, typeId) {
+            $.post("/Activity/GetListData", { pageIndex: pageIndex, pageSize: pageSize, typeId: typeId }, function (data) {
+                $("#btnevent").remove();
+                if (data["msg"] == "success") {
+                    for (var i in data["data"]) {
+                        var temp = data["data"][i];
+                        //图片
+                        var li = $("<li class='aclist-box'></li>");
+                        var li_new_div = $("<div class='clearfix'></div>");
+                        var li_a = $("<a class='aclist-box-img' href='/Activity/Details/?Id=" + temp.ActivityID + "'></a>");
+                        var li_a_img = $("<img/>");
+                        li_a_img.attr("src", temp.ActivityIcon);
+                        li_a.append(li_a_img);
+                            
+                        var li_div = $("<div class='aclist-box-info'></div>");
+                        var li_div_a = $("<a href='/Activity/Details/?Id=" + temp.ActivityID + "'></a>");
+                        li_div_a.text(temp.ActivityName);
+                        var li_div_s1 = $("<span class='actime'></span>"); 
+                        li_div_s1.text("活动时间：" + TimeFormat(temp.ActivityStart, "MM-dd HH:mm") + "-" + TimeFormat(temp.ActivityEnd, "HH:mm"));
+                        var li_div_s2 = $("<span class='acendtime'></span>");
+                        li_div_s2.text("截止时间：" + TimeFormat(temp.ActivityEnrollEnd, "yyyy-MM-dd HH:mm"));
+                        var li_div_s3 = $("<p>招募人数：<span>" + temp.ActivityPrediNum+"</span>人</p>");
+                        var li_div_s4 = $("<p>已报名：<span class='red'>" + temp.Count+"</span>人</p>");
+                        li_div.append(li_div_a);
+                        li_div.append(li_div_s1);
+                        li_div.append("<br>");
+                        li_div.append(li_div_s2);
+                        li_div.append("<br /><br />");
+                        li_div.append(li_div_s3);
+                        li_div.append(li_div_s4);
+
+                        var li_bdiv = $("<div class='acbox-btn'></div>");
+                        li_bdiv.append("<button class='btn btnEnroll' activity='"+temp.ActivityID+"'>我要报名</button>");
+                        li_div.append(li_bdiv);
+                        
+                        li_new_div.append(li_a);
+                        li_new_div.append(li_div);
+                        li.append(li_new_div);
+                        //li.append(li_bdiv);
+                        $("#actul").append(li);
+                    }
+                    var btn_li = $("<li style='text-align:center;'></li>");
+                    var btn_input = $("<input type='button' id='btnevent' value='查看更多' style='border:none;background:#eee;'/>");
+                    pageIndex++;
+                    btn_input.attr("pageIndex", pageIndex);
+                    btn_li.append(btn_input);
+                    $("#actul").append(btn_li);
+                    BindEnrollClickEvent();
+                    BindActivtyListClickEvent();
+                } else {
+                    var btn_li = $("<li></li>");
+                    btn_li.text("无新内容");
+                    $("#actul").append(btn_li);
+                }
+            });
+
+        }
+
+        //查看更多活动按钮绑定
+        function BindActivtyListClickEvent() {
+            $("#btnevent").click(function () {
+                var pageIndex = parseInt($("#btnevent").attr("pageIndex"));
+                var pageSize = 5;
+                var typeId = $("#ActivityTypeID").val();
+                GetActivityData(pageIndex, pageSize, typeId);
+            });
+        }
+
+        //报名按钮绑定事件
+        function BindEnrollClickEvent() {
+            $(".btnEnroll").click(function () {
+                var activityId = $(this).attr("activity");
+                var that = this;
+                $.post("/UserEnroll/Create/", { activityId: activityId }, function (data) {
+                    if (data["msg"] == "exists") {
+                        layer.msg("您已报名");
+                    } else if (data["msg"] == "audit") {
+                        layer.msg("您的政治面貌尚未审核，无法报名活动，请耐心等待审核！")
+                    } else if (data["msg"] == "full") {
+                        layer.msg("报名人数已满!");
+                    } else if (data["msg"] == "fail") {
+                        layer.msg("报名失败,请稍后再试!");
+                    } else if (data["msg"] == "later") {
+                        layer.msg("报名已结束!");
+                    } else if (data["msg"] == "success") {
+                        layer.msg("报名成功!", {
+                            end: function () {
+                                var need_Num = Number($(that).parent().prev().prev().children("span").text());
+                                var join_Num = Number($(that).parent().prev().children(".red").text());
+                                if (join_Num < need_Num) {
+                                    join_Num++;
+                                    $(that).parent().prev().children(".red").text(join_Num);
+                                }
+                            }
+                        });
+                    } else if (data["msg"] == "nologin") {
+                        layer.msg("请先登录！");
+                    }
+                });
+            });
+        }
+
+        //时间戳转为时间
+        function TimeFormat(value,str) {
+            return new Date(parseInt(value.replace("/Date(", "").replace(")/", ""), 10)).pattern(str);
+        }
+    </script>
+}
+
+@section Act_i{
+    this-icon
+}
+@section Act_s{
+    this-icon
+}

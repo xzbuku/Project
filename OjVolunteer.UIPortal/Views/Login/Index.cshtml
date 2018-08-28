@@ -1,0 +1,60 @@
+﻿@{
+    Layout = null;
+}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登录</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link href="~/Content/oj/css/bootstrap.css" rel="stylesheet" />
+    <link href="~/Content/oj/css/main.css" rel="stylesheet" />
+    <link href="~/Content/layui/css/layui.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="login-content conter-block">
+        <p class="lg-title">登录</p>
+        @using (Ajax.BeginForm("ProcessLogin", "Login", new AjaxOptions() { OnSuccess = "afterLogin" }, new { @class = "layui-form" }))
+        {
+            <input type="text" name="LoginCode" class="forminput clearfix" placeholder="请输入登录帐号" lay-verify="required|userID">
+            <input type="password" name="LoginPwd" class="forminput clearfix" placeholder="请输入密码" lay-verify="required|pass">
+            <button type="submit" class="btn btn-success" id="loginbtn" lay-submit>登录</button>
+            <a href="/Register">快速注册></a> <a href="/UserInfo/Index">游客访问></a>
+
+        }
+    </div>
+    <script src="~/Content/oj/js/jquery-1.12.4.js"></script>
+    <script src="~/Content/layui/layui.all.js"></script>
+    <script src="~/Content/oj/js/admin.js"></script>
+    <script src="~/Content/oj/js/check.js"></script>
+    <script src="~/Content/oj/js/notification.js"></script>
+
+    <script src="~/Scripts/bootstrap.js"></script>
+    <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+    <script type="text/javascript">
+        if (window.parent.window != window) {
+            window.top.location.href = "/Login/Index";
+        }
+        function afterLogin(data) {
+
+            layui.use('layer', function () {
+                var layer = layui.layer;
+            });
+            if (data == "Userinfo") {
+                window.top.location.href = "/UserInfo/Index";
+            } else if (data == "OrganizeInfo") {
+                window.top.location.href = "/OrganizeInfo/Index";
+            } else if (data == "fail") {
+                layer.msg('密码或帐号错误！请重新输入', { icon: 5 });
+            } else if (data == "Delete") {
+                layer.msg('该账号禁止登录！请联系管理员', { icon: 5 });
+            } else if (data == "Auditing") {
+                layer.msg('该账号正在审核！请耐心等待', { icon: 5 });
+            }
+        }
+    </script>
+</body>
+</html>
+

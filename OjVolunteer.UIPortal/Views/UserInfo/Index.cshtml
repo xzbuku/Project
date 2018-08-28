@@ -1,0 +1,130 @@
+﻿
+
+@{
+    Layout = "~/Views/Shared/User_Layout.cshtml";
+}
+
+<header>
+    <nav class="top">
+        <p>首页</p>
+    </nav>
+    <!-- 轮播图 -->
+    <nav class="ad clearfix">
+        <div class="layui-carousel" id="ad-img">
+            <div carousel-item>
+                <div><img src="~/Content/oj/images/1.jpg"></div>
+                <div><img src="~/Content/oj/images/2.jpg"/></div>
+                <div><img src="~/Content/oj/images/3.jpg"/></div>
+            </div>
+        </div>
+    </nav>
+    <div class="icons clearfix">
+        <!-- 下方类名为poor的li表示该功能尚未完成 -->
+        <ul class="icons-row">
+            <li><a href="/Activity/UserCreate"><i class="iconfont icon-huodong"></i></a><span>发起活动</span></li>
+            <li><a href="/Top/Index"><i class="iconfont icon-paixingbang"></i></a><span>排行榜</span></li>
+            <li class="poor"><a href="#"><i class="iconfont icon-scanning" id="scanQRCode"></i></a><span>扫码打卡</span></li>
+            <li><a href="/Talks/List"><i class="iconfont icon-edit"></i></a><span>志愿者心得</span></li>
+            <li class="poor"><a href="#"><i class="iconfont icon-office"></i></a><span>我要学习</span></li>
+            <li class="poor"><a href="#"><i class="iconfont icon-rejectedorder"></i></a><span>电子证书</span></li>
+            <li class="poor"><a href="#"><i class="iconfont icon-calendar"></i></a><span>志愿者日历</span></li>
+            <li class="poor"><a href="#"><i class="iconfont icon-pin"></i></a><span>服务指南</span></li>
+        </ul>
+    </div>
+</header>
+<!-- 首页的主要内容 -->
+<div class="hot-action">
+    <ul class="hot-content" id="lilist">
+    </ul>
+</div>
+
+@section Script{
+    <script>
+        $('.poor').click(function () {
+            layer.msg('该功能尚未完成！');
+        })
+        layui.use('carousel', function () {
+            var carousel = layui.carousel;
+            //建造实例
+            carousel.render({
+                elem: '#ad-img'
+                , width: '100%' //设置容器宽度
+                , arrow: 'always' //始终显示箭头
+                , height: '200px'  //设置高度
+                , arrow: 'always'  //两个圆形箭头一直存在
+                , indicator: 'none'  //去掉了下面的圆点
+            });
+        });
+
+        $(function () {
+            if (@ViewBag.isShow==1) {
+                layer.msg("50小时");
+            }
+            GetActivityData(1, 8);
+        });
+        function GetActivityData(pageIndex, pageSize) {
+            $.post("/Activity/GetListData", { pageIndex: pageIndex, pageSize: pageSize }, function (data) {
+                if (data["msg"] == "success") {
+                    var length = (data["data"]).length;
+                    for (var i = 0; i < length;i++) {
+                        var temp = data["data"][i];
+                        //图片
+                        var li = $("<li class='hot-list clearfix'></li>");
+                        var li_a1 = $("<a  href='/Activity/Details/?Id=" + temp.ActivityID + "'></a>");
+                        var li_a1_div = $("<div class='hot-inline pull-left'></div>");
+                        var li_a1_div_div = $("<div class='hot-img'></div>");
+
+                        var li_a1_div_div_img = $("<img/>");
+                        li_a1_div_div_img.attr("src", temp.ActivityIcon);
+                        li_a1_div_div.append(li_a1_div_div_img);
+                        if (temp.ActivityName.length > 20) {
+                            temp.ActivityName = temp.ActivityName.substring(0, 20) + "...";
+                        }
+                        var li_a1_div_p = $("<p>" + temp.ActivityName + "</p>");
+                        li_a1_div.append(li_a1_div_div);
+                        li_a1_div.append(li_a1_div_p);
+                        li_a1.append(li_a1_div);
+
+                        i++;
+                        if (i == length)
+                            return;
+                        temp = data["data"][i];
+                        var li_a2 = $("<a  href='/Activity/Details/?Id=" + temp.ActivityID + "'></a>");
+                        var li_a2_div = $("<div class='hot-inline pull-right'></div>");
+                        var li_a2_div_div = $("<div class='hot-img'></div>");
+
+                        var li_a2_div_div_img = $("<img/>");
+                        li_a2_div_div_img.attr("src", temp.ActivityIcon);
+                        li_a2_div_div.append(li_a2_div_div_img);
+                        if (temp.ActivityName.length > 20) {
+                            temp.ActivityName = temp.ActivityName.substring(0,20) + "...";
+                        }
+                        var li_a2_div_p = $("<p>" + temp.ActivityName + "</p>");
+                        li_a2_div.append(li_a2_div_div);
+                        li_a2_div.append(li_a2_div_p);
+                        li_a2.append(li_a2_div);
+
+                        li.append(li_a1);
+                        li.append(li_a2);
+
+                        $("#lilist").append(li);
+                    }
+                } else {
+                    var btn_li = $("<li></li>");
+                    btn_li.text("无新内容");
+                    $("#actul").append(btn_li);
+
+                }
+            });
+
+        }
+
+    </script>
+}
+@section Index_i{
+    this-icon
+}
+
+@section Index_s{
+    this-icon
+}

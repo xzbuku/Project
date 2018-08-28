@@ -1,0 +1,187 @@
+﻿
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>志愿者系统管理首页</title>
+
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />
+    <link href="~/Content/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet" />
+    <link href="~/Content/bootstrap-table/bootstrap-table.css" rel="stylesheet" />
+
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script src="~/Content/bootstrap-table/bootstrap-table.js"></script>
+    <script src="~/Scripts/bootstrap.js"></script>
+    <script src="~/Content/bootstrap-table/bootstrap-table-zh-CN.js"></script>
+    <script src="~/Content/layui/layui.all.js"></script>
+    <script src="~/Content/bootstrap3-editable/js/bootstrap-editable.js"></script>
+    <script src="~/Content/bootstrap-table/bootstrap-table-editable.js"></script>
+    <script src="~/Scripts/datapattern.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            //初始化表格
+            initTable();
+            $("#btn_add").click(function () {
+                var addInput = $('#add_department');
+                var pattern = /^[\u4E00-\u9FA5]{2,20}$/;
+                if (addInput.val().match(pattern)) {
+                    if ($("#add_department").val() == "") {
+                        layer.alert("名称不为空");
+                        return;
+                    }
+                    $.post("/Department/Create", { DepartmentName: $("#add_department").val() }, function (data) {
+                        if (data == "success") {
+                            initTable();
+                            $("#add_department").val("");
+                            alayer.lert("操作成功");
+                        } else if (data == "fail") {
+                            layer.alert("操作失败");
+                        } else if (data == "exist") {
+                            layer.alert("该学院名存在");
+                        }
+                    });
+                }
+                else {
+                    layer.alert('学院名称添加应在2-20个汉字之间');
+                }
+
+                
+            });
+            $("#btn_removes").click(function () {
+                removeSelectClickEvent();
+            });
+
+        });
+
+        //初始化表格
+        function initTable(queryParam) {
+            $("#tb_department").bootstrapTable('destroy');
+            $('#tb_department').bootstrapTable({
+                contentType: "application/x-www-form-urlencoded",
+                url: '/Department/GetAllDepartment',        
+                method: 'post',                     
+                toolbar: '#toolbar',
+                striped: true,                      
+                cache: false,
+                pagination: true,                  
+                queryParams: queryParam,
+                sidePagination: "server",           
+                pageNumber: 1,                      
+                pageSize: 10,                      
+                pageList: [10, 20, 50, 100],        
+                smartDisplay: false,
+                showColumns: true,
+                showRefresh: true,
+                minimumCountColumns: 2,
+                clickToSelect: true,
+                exportDataType: "all",
+                uniqueId: "DepartmentID",                    
+                columns: [
+                    {
+                        field: 'checked',
+                        checkbox: true,
+                        width: '5%'
+                    },
+                    {
+                        field: 'DepartmentID',
+                        title: '学院编号',
+                        width: '5%',
+                        visible: false,
+                        align: 'center',
+                    },
+                    {
+                        field: 'DepartmentName',
+                        title: '学院名称',
+                        visible: true,
+                        width: '10%',
+                        align: 'center',
+                    },
+                    {
+                        field: 'ModfiedOn',
+                        title: '更新时间',
+                        visible: true,
+                        width: '13%',
+                        align: 'center',
+                        formatter: function (value, row, index) {
+                            if (value == null)
+                                return null;
+                            else
+                                return new Date(parseInt(value.replace("/Date(", "").replace(")/", ""), 10)).pattern("yyyy-MM-dd HH:mm");
+                        }
+                    }
+                ],
+                onDblClickRow: function (row, $element) {
+                    layer.prompt({ title: '编辑', value: row["DepartmentName"] }, function (val, index) {
+                        var reg = /^[\u4E00-\u9FA5]{2,20}$/;
+                        if (val.match(reg)) {
+                            $.post("/Department/Edit", { DepartmentID: row["DepartmentID"], DepartmentName: val }, function (data) {
+                                if (data["msg"] == "success") {
+                                    layer.msg("修改成功！");
+                                    initTable();
+                                } else if (data["msg"] == "exist") {
+                                    layer.msg("该名称已存在！");
+                                } else {
+                                    layer.msg("修改失败！")
+                                }
+                            })
+                        }
+                        else if (val == row["DepartmentName"]) {
+                            layer.close(index);
+                            return;
+                        }
+                        else {
+                            layer.msg('修改失败！学院名称应在2-20个汉字之间');
+                        }
+                        layer.close(index);
+                    });
+                },
+            });
+        };
+
+        function removeSelectClickEvent() {
+            var selectedRows = $('#tb_department').bootstrapTable('getSelections', function (row) {
+                return row;
+            });
+            if (selectedRows.length <= 0) {
+                layer.alert("至少选中一个选项");
+                return;
+            }
+            var ids = "";
+            for (var key in selectedRows) {
+                ids += selectedRows[key].DepartmentID + ",";
+            }
+            ids = ids.substr(0, ids.length - 1);
+            $.post("/Department/DeleteOfList", { ids, ids }, function (data) {
+                if (data == "success") {
+                    initTable();
+                    layer.alert("操作成功");
+                } else if (data == "null") {
+                    layer.alert("至少选择一列");
+                } else {
+                    layer.alert("操作失败,请稍后再试");
+                }
+            });
+        }
+
+    </script>
+</head>
+<body>
+
+    <div id="toolbar" class="btn-group">
+        <input id="add_department" style="margin-left:15px;margin-right:10px;width:250px;"/>
+        <button id="btn_add" type="button" class="btn btn-default"  style="float:none;">
+            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>添加
+        </button>
+        <button id="btn_removes" type="button" class="btn btn-default"  style="float:none;">
+            <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>删除
+        </button>
+    </div>
+    <div>
+        <table id="tb_department"></table>
+    </div>
+</body>
+</html>
+
+
+
+

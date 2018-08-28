@@ -1,0 +1,158 @@
+﻿@model OjVolunteer.Model.Activity
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>大学生志愿服务认证中心</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link href="~/Content/oj/css/bootstrap.css" rel="stylesheet" />
+    <link href="~/Content/oj/css/amazeui.min.css" rel="stylesheet" />
+    <link href="~/Content/oj/css/main.css" rel="stylesheet" />
+    <style>
+        pre img {
+        width:300px;
+        
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="top">
+            <p>活动详情</p>
+        </nav>
+    </header>
+    <div class="acmore">
+        <img src="@Model.ActivityIcon">
+        <div class="acmore-class">@Model.ActivityType.ActivityTypeName</div>
+    </div>
+    <!-- 活动简介 -->
+    <div class="acmoreinfo">
+        <div class="acmore-title">
+            <span>@Model.ActivityName</span>
+        </div>
+        <div class="acmore-title">
+            <span>报名时间：@{ var Estart = ((DateTime)(Model.ActivityEnrollStart)).ToString("MM月dd日 HH:mm"); @Estart} - @{ var Eend = ((DateTime)(Model.ActivityEnrollEnd)).ToString("MM月dd日 HH:mm"); @Eend}</span>
+        </div>
+        <div class="acmore-title">
+            <span>活动时间：@{ var start = ((DateTime)(Model.ActivityStart)).ToString("yyyy年 MM月dd日 HH:mm"); @start} - @{ var end = ((DateTime)(Model.ActivityEnd)).ToString("HH:mm"); @end}</span>
+        </div>
+        <div class="acmore-title">
+            <span>活动地点：<a target="_blank" href="https://map.baidu.com/mobile/webapp/search/search/qt=s&amp;wd=@Model.ActivityAddress/vt=map">@Model.ActivityAddress</a></span>
+        </div>
+        <div class="acmore-title">
+            <span>详细地址：@Model.ActivityAddressDetail</span>
+        </div>
+        <div class="acmore-title">
+            <a href="/UserInfo/Other/@Model.ActivityManagerID" class="acmore-userinfo">
+                <img src="@Model.ManagerUserInfo.UserInfoIcon">
+                <span>队长：@Model.ManagerUserInfo.UserInfoShowName<</span>
+                <i>查看队长详细信息</i>
+            </a>
+        </div>
+        <div class="acmore-title">
+            <span>手机号：@Model.ManagerUserInfo.UserInfoPhone</span>
+        </div>
+        @if (Model.ActivityManagerID == ViewBag.UserId)
+    {
+        <div class="acmore-button">
+            <button class="am-btn am-btn-primary" onclick="SingBtn(0)">
+                签到界面
+            </button>
+            <button class="am-btn am-btn-primary" onclick="SingBtn(1)">
+                签退界面
+            </button>
+        </div>
+
+}
+
+        <div class="acmore-content">
+            <pre>
+            @Html.Raw(Model.ActivityContent)
+    </pre>
+        </div>
+    </div>
+
+
+        <div class="signnav btnEnroll"activity="@Model.ActivityID" >
+            <p>我要报名</p>
+        </div>
+
+
+
+
+
+    <!-- 返回上一层组件 -->
+    <a href="javascript:history.go(-1)" class="header-back">
+        <span class="glyphicon glyphicon-chevron-left"></span>
+    </a>
+    <script src="~/Content/oj/js/jquery-1.12.4.js"></script>
+    <script src="~/Content/layui/layui.js"></script>
+    <script src="~/Content/oj/js/bootstrap.min.js"></script>
+    <script src="~/Content/oj/js/amazeui.min.js"></script>
+
+    <script src="~/Content/oj/js/main.js"></script>
+    <script src="~/Scripts/datapattern.js"></script>
+    <script>
+        $(function () {
+            BindEnrollClickEvent();
+        });
+        function BindEnrollClickEvent() {
+           $(".btnEnroll").click(function () {
+                var activityId = $(this).attr("activity");
+               var that = this;
+
+               //活动是否结束
+               if (@Model.Status == 4) {
+                   $.post("/UserEnroll/Create/", { activityId: activityId }, function (data) {
+                       if (data["msg"] == "exists") {
+                           layer.msg("您已报名");
+                       } else if (data["msg"] == "audit") {
+                           layer.msg("您的政治面貌尚未审核，无法报名活动，请耐心等待审核！")
+                       } else if (data["msg"] == "full") {
+                           layer.msg("报名人数已满!");
+                       } else if (data["msg"] == "fail") {
+                           layer.msg("报名失败,请稍后再试!");
+                       } else if (data["msg"] == "later") {
+                           layer.msg("报名已结束!");
+                       } else if (data["msg"] == "success") {
+                           layer.msg("报名成功!", {
+                               end: function () {
+                                   var need_Num = Number($(that).parent().prev().prev().children("span").text());
+                                   var join_Num = Number($(that).parent().prev().children(".red").text());
+                                   if (join_Num < need_Num) {
+                                       join_Num++;
+                                       $(that).parent().prev().children(".red").text(join_Num);
+                                   }
+                               }
+                           });
+                       } else if (data["msg"] == "nologin") {
+                           layer.msg("请先登录！");
+                       }
+                   });
+               }
+               else {
+                   layer.msg("活动已结束");
+               }
+            });
+        }
+        //时间戳转为时间
+        function TimeFormat(value) {
+            return new Date(parseInt(value.replace("/Date(", "").replace(")/", ""), 10)).pattern("yyyy-MM-dd HH:mm");
+        }
+
+        function SingBtn(typeId) {
+            $.post("/Activity/IsEnd/", { Id: @Model.ActivityID,TypeId:typeId }, function (data) {
+                if (data["msg"] == 0) {
+                    window.location.href = "/UserEnroll/SignIn/?aId=@Model.ActivityID";
+
+                } else if (data["msg"] == 1) {
+                    window.location.href = "/UserEnroll/SignOut/?aId=@Model.ActivityID";
+                } else {
+                    layer.msg("活动已结束");
+                }
+            })
+        }
+    </script>
+</body>
+</html>

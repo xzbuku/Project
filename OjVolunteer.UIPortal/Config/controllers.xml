@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<objects xmlns="http://www.springframework.net">
+  <object type="OjVolunteer.UIPortal.Controllers.LoginController, OjVolunteer.UIPortal" singleton="false" >
+    <property name="UserInfoService" ref="UserInfoService" ></property>
+    <property name="OrganizeInfoService" ref="OrganizeInfoService" ></property>
+  </object>
+  
+  <object type="OjVolunteer.UIPortal.Controllers.UserInfoController, OjVolunteer.UIPortal" singleton="false" >
+    <property name="UserInfoService" ref="UserInfoService" ></property>
+    <property name="UserDurationService" ref="UserDurationService" ></property>
+    <property name="PoliticalService" ref="PoliticalService" ></property>
+    <property name="DepartmentService" ref="DepartmentService" ></property>
+    <property name="MajorService" ref="MajorService" ></property>
+    <property name="OrganizeInfoService" ref="OrganizeInfoService" ></property>
+    <property name="TalksService" ref="TalksService" ></property>
+    <property name="UserBadgeService" ref="UserBadgeService" ></property>
+  </object>
+  
+  <object type="OjVolunteer.UIPortal.Controllers.OrganizeInfoController, OjVolunteer.UIPortal" singleton="false" >
+    <property name="OrganizeInfoService" ref="OrganizeInfoService" ></property>
+    <property name="UserInfoService" ref="UserInfoService" ></property>
+    <property name="UserDurationService" ref="UserDurationService" ></property>
+  </object>
+  
+  <object type="OjVolunteer.UIPortal.Controllers.RegisterController, OjVolunteer.UIPortal" singleton="false" >
+    <property name="UserInfoService" ref="UserInfoService" ></property>
+    <property name="OrganizeInfoService" ref="OrganizeInfoService" ></property>
+    <property name="PoliticalService" ref="PoliticalService" ></property>
+    <property name="UserDurationService" ref="UserDurationService" ></property>
+  </object>
+  
+  <object type="OjVolunteer.UIPortal.Controllers.PoliticalController, OjVolunteer.UIPortal" singleton="false" >
+    <property name="PoliticalService" ref="PoliticalService" ></property>
+  </object>
+  
+  <object type="OjVolunteer.UIPortal.Controllers.DepartmentController, OjVolunteer.UIPortal" singleton="false" >
+    <property name="DepartmentService" ref="DepartmentService" ></property>
+  </object>
+  
+  <object type="OjVolunteer.UIPortal.Controllers.ActivityTypeController, OjVolunteer.UIPortal" singleton="false" >
+    <property name="ActivityTypeService" ref="ActivityTypeService" ></property>
+  </object>
+  
+  <object type="OjVolunteer.UIPortal.Controllers.MajorController, OjVolunteer.UIPortal" singleton="false" >
+    <property name="MajorService" ref="MajorService" ></property>
+  </object>
+  
+  <object type="OjVolunteer.UIPortal.Controllers.TalksController, OjVolunteer.UIPortal" singleton="false" >
+    <property name="TalksService" ref="TalksService" ></property>
+    <property name="FavorsService" ref="FavorsService" ></property>
+  
+  </object>
+
+  <object type="OjVolunteer.UIPortal.Controllers.ActivityController, OjVolunteer.UIPortal" singleton="false" >
+    <property name="ActivityService" ref="ActivityService" ></property>
+    <property name="ActivityTypeService" ref="ActivityTypeService" ></property>
+    <property name="OrganizeInfoService" ref="OrganizeInfoService" ></property>
+    <property name="MajorService" ref="MajorService" ></property>
+    <property name="DepartmentService" ref="DepartmentService" ></property>
+    <property name="PoliticalService" ref="PoliticalService" ></property>
+    <property name="UserEnrollService" ref="UserEnrollService" ></property>
+    <property name="ActivityDetailService" ref="ActivityDetailService" ></property>
+    <property name="UserInfoService" ref="UserInfoService" ></property>
+  </object>
+
+  <object type="OjVolunteer.UIPortal.Controllers.UserEnrollController, OjVolunteer.UIPortal" singleton="false" >
+    <property name="ActivityService" ref="ActivityService" ></property>
+    <property name="UserEnrollService" ref="UserEnrollService" ></property>
+  </object>
+
+  <object type="OjVolunteer.UIPortal.Controllers.ActivityDetailController, OjVolunteer.UIPortal" singleton="false" >
+    <property name="ActivityDetailService" ref="ActivityDetailService" ></property>
+  </object>
+
+  <object type="OjVolunteer.UIPortal.Controllers.FavorsController, OjVolunteer.UIPortal" singleton="false" >
+    <property name="FavorsService" ref="FavorsService" ></property>
+    <property name="TalksService" ref="TalksService" ></property>
+  </object>
+  <object type="OjVolunteer.UIPortal.Controllers.TopController, OjVolunteer.UIPortal" singleton="false" >
+    <property name="ActivityDetailService" ref="ActivityDetailService" ></property>
+    <property name="OrganizeInfoService" ref="OrganizeInfoService" ></property>
+    <property name="TalksService" ref="TalksService" ></property>
+  
+  </object>
+</objects>

@@ -1,0 +1,988 @@
+/*---------
+基本默认值
+-----------*/
+
+html{
+	font-size: 62.5%;
+	/* 62.5%代表1个rem = 10px */
+	color: #000;
+}
+::selection {
+	background-color: #b3d3fc;
+	text-shadow: none;
+}
+ul{
+	margin: 0;
+	padding: 0;
+}
+li{
+	list-style:none;
+}
+a{
+	text-decoration: none;
+	color: #000;
+}
+a:visited{
+	text-decoration: none;
+}
+a:hover{
+	text-decoration: none;
+}
+a:focus{
+	text-decoration: none;
+}
+a:active{
+	text-decoration: none;
+}
+/*居中显示*/
+.conter-block{
+	display: block;;
+	margin-right: auto;;
+	margin-left: auto;
+}
+/*在右边显示*/
+.pull-right{
+	float: right !important;
+}
+/*在左边显示*/
+.pull-left{
+	float: left  !important;
+}
+/*文字居右*/
+.text-right{
+	text-align: right !important;
+}
+/*文字居左*/
+.text-left{
+	text-align: left !important;
+}
+/*隐藏 但占空间*/
+.hide{
+	display: none !important;
+}
+/*出现*/
+.show{
+	display: block !important;
+}
+/*隐藏 但不占空间*/
+.invisible{
+	visibility: hidden;
+}
+/*文字隐藏*/
+.text-hide{
+	font:0/0 a;
+	color: transparent;
+	text-shadow: none;
+	background-color: transparent;
+	border: 0;
+}
+/*清除浮动*/
+.clearfix:before,
+.clearfix:after{
+	content: " ";
+	display: table;
+}
+.clearfix:after{
+	clear: both;
+}
+
+/*主界面样式*/
+	header{
+		width: 100%;
+	}
+	/*导航条部分*/
+	header .top{
+		width: 100%;
+		height: 50px;
+		background-color: rgb(198,47,47);
+		text-align: center;
+		line-height: 50px;
+		position: fixed;
+		top: 0;
+		z-index: 99;
+	}
+	header .top p{
+		color: #fff;
+		font-size: 1.6rem;
+	}
+	/*轮播图部分*/
+	header .ad{
+		width: 95%;
+		height: 200px;
+		margin: 10px auto;
+		margin-top: 60px;
+	}
+	header .ad img{
+		width: 100%;
+		height: 200px;
+	}
+	/*图标导航部分*/
+	header .icons{
+		padding: 5px 10px 10px;
+	}
+	header .icons .icons-row{
+		margin: 0 auto;
+		text-align: center;
+	}
+    /*设置导入图标样式 */
+	.icon-huodong,
+	.icon-paixingbang,
+	.icon-scanning,
+	.icon-calendar,
+	.icon-office,
+	.icon-rejectedorder,
+	.icon-pin,
+	.icon-edit
+	{
+		font-size: 40px;
+		color: #C62F2F;
+		vertical-align: middle;
+	}
+	
+	/*这里宽度设置了25%，可以让每排四个图标平均分配*/
+	header .icons .icons-row li{
+		width: 25%;
+		float: left;
+		margin-bottom: 15px;
+	}
+	header .icons .icons-row li a{
+		width: 40px;
+		height: 40px;
+		margin: 0 auto;
+		text-align: center;
+		line-height: 55px;
+		display: block;
+	}
+	header .icons .icons-row li span{
+		display: block;
+		width: 100%;
+		text-align: center;
+		padding-top: 20px;
+	}
+
+	/*主要内容部分*/
+	.hot-action{
+		margin-bottom: 70px;
+		margin-top: -10px;
+	}
+	.hot-content{
+		background-color: #eee;
+		margin: 0 auto;
+		padding-top: 15px;
+		border-top-left-radius: 5px;
+		border-top-right-radius: 5px;
+	}
+	.hot-list{
+		text-align: center;
+        margin:0 auto;
+        width:95%;
+	}
+	.hot-inline{
+		display: block;
+		width: 48%;
+		background-color: #fff;
+		margin-bottom: 10px;
+		border-radius: 5px;
+        height:170px;
+        overflow:hidden;
+        padding:5px;
+	}
+	.hot-inline p{
+		padding: 5px;
+		font-size: 12px;
+		width:100%;
+		text-align: left;
+	}
+	.hot-img img{
+		width: 100%;
+		height: 120px;
+		border-top-left-radius:5px;
+		border-top-right-radius:5px;
+	}
+
+
+	/*底部导航*/
+	.navbt{
+		background-color: #fff;
+		border-top: 1px solid #eee;
+		position: fixed;
+		left: 0;
+		bottom: 0;
+		width: 100%;
+		display: flex;
+		z-index: 999;
+		height: 55px;
+		padding-top: 5px;
+	}
+	.navbt .btBar{
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		color: #333;
+	}
+        /*设置导入图标在下方固定导航栏的样式 */
+	.navbt .btBar .icon-paixingbang,
+	.navbt .btBar .icon-compass,
+	.navbt .btBar .icon-edit,
+	.navbt .btBar .icon-zhuye,
+	.navbt .btBar .icon-account
+	{
+		font-size: 24px;
+		color: #000000;
+	}
+	.this-icon{
+		color: #C62F2F !important;
+	}
+
+	.navbt .btBar span{
+		margin-top: 5px;
+		margin-bottom: 5px;
+		font-size: 12px;
+	}
+/*登录界面样式*/
+	/*由于导航栏有50px高所以下面的元素至少要有50px的上边距*/
+	.login-content{
+        margin:0 auto;
+		margin-top: 60px;
+		text-align: center;
+		border:1px solid #ccc;
+		width: 90%; 
+		padding-bottom: 40px;
+		border-radius: 5px;
+		box-shadow: 0 0 5px gray;
+		max-width: 750px;
+	}
+	.login-content .lg-title{
+		font-size: 20px;
+		margin-bottom: 30px;
+		margin-top: 20px;
+	}
+	.login-content form{
+		width: 100%;
+	}
+	/*把input的类单独写出来，可以给其他表单的元素使用*/
+	.forminput{
+		padding: 10px 5px;
+		margin:0 auto;
+		width: 250px;
+		font-size: 1.3rem;
+		border: 1px solid #ccc;
+		border-radius: 3px;		
+		margin-bottom: 20px;
+		display: block;
+	}
+	.select-item{
+		margin: 0 auto;
+		width: 250px;
+		margin-bottom: 20px;
+	}
+	.btn{
+		width: 250px;
+	}
+	.login-content form a{
+		display: block;
+		margin-top: 30px;
+	}
+	.tips{
+		margin-left: -200px;
+	}
+/*个人中心界面样式*/
+	.usertitle{
+		margin: 0 auto;
+		margin-top: 50px;
+		width: 90%;
+		text-align: center;
+		min-width: 300px;
+		padding: 20px 10px;
+	}
+    .info-img {
+        padding-right:10px;
+    }
+	.usertitle img{
+		width: 100px;
+        height:100px;
+		border-radius: 50%;
+	
+	}
+	.usertitle .info-img{
+		width: 35%;	
+		float: left;
+	}
+	.usertitle .info-name{
+		float: left;
+		width: 65%;
+		text-align: left;
+		padding-left: 20px;
+	}
+	.usertitle .info-name h3{
+		font-weight: bold;
+		margin-bottom: 15px;
+	}
+	.usertitle .info-name p{
+		color: #999;
+        font-size:10px;
+        text-decoration:none;
+	}
+        .usertitle .info-name p i {
+            color: #C62F2F;
+        }
+	
+	/*用户头像下的一些信息*/
+	.baseinfo{
+		padding: 0.5rem;
+		margin-top: -10px;
+	}
+	/*右箭头*/
+.info-item .icon-edit,
+.icon-compass,
+.icon-password
+.icon-set{
+    font-size: 20px;
+    color: #000;
+}
+	.baseinfo .info-item{
+		background-image: url(../images/goin.png);
+		background-repeat: no-repeat;
+		background-position: 97% center;
+		background-size: 10px;
+		border:1px solid #eee;
+		border-left: none;
+		border-right: none;
+		border-bottom: none;
+	}
+	.baseinfo .info-item a{
+		display: block;
+		padding-left: 10%;
+		height: 50px;
+	}
+	.baseinfo .info-item a img{
+		width: 20px;
+	}
+	.baseinfo .info-item a span{
+		font-size: 12px;	
+		line-height: 50px;
+		margin-left: 5px;
+	}
+	/*退出按钮*/
+	.userout{
+		margin-top: 10px;
+		text-align: center;
+	}
+
+/*排行榜界面样式*/
+	/*第一名样式*/
+	.toplist{
+		width: 100%;
+		position: relative;
+		border:1px solid #eee;
+		padding-top: 10px;
+	}
+	.toplist .toplist-userinfo{
+		text-align: center;
+	}
+	.toplist .toplist-userinfo img{
+		border-radius: 50%;
+		width: 100px;
+		height: 100px;
+	}
+	.toplist .toplist-userinfo p{
+		padding-top: 10px;
+		padding-bottom: 10px;
+	}
+	.toplist .toplist-userinfo p span{
+		color: #C62F2F;
+	}
+	/*非第一名样式*/
+	.untop{
+		margin-bottom: 60px;
+	}
+	.untop .untop-item{
+		border-bottom: 1px solid #eee;
+		height: 60px;
+		padding: 5px 0;
+	}
+	.untop .untop-item .rank{
+		float: left;
+		width: 20%;
+		line-height: 50px;
+		color: #C62F2F;
+		padding-left: 20px;
+	}
+	.untop .untop-item .untop-item-wrap{
+		float: left;
+		width: 20%;
+	}
+	.untop .untop-item img{
+		width: 50px;
+		height: 50px;
+		border-radius: 50%;
+	}
+	.untop .untop-item .rankinfo{
+		float: right;
+		width: 60%;
+		height: 50px;
+	}
+	.untop .untop-item .rankinfo p{
+		margin-bottom: 15px;
+	}
+	.untop .untop-item .rankinfo i{
+		color: #C62F2F;
+	}
+	/*排行榜中我的排行榜样式*/
+	.myRank{
+		position: fixed;
+		bottom: -1px;
+		border-top: 1px solid #eee;
+		box-shadow: 0 0 20px #ddd;
+		width: 100%;
+		background-color: #228FBD;
+	}
+	.myRank .untop-item{
+		border-bottom: 1px solid #eee;
+		height: 60px;
+		padding: 5px 0;
+	}
+	.myRank .untop-item .rank{
+		float: left;
+		width: 20%;
+		line-height: 50px;
+		color: #fff;
+		padding-left: 20px;
+	}
+	.myRank .untop-item .untop-item-wrap{
+		float: left;
+		width: 20%;
+	}
+	.myRank .untop-item img{
+		width: 50px;
+		height: 50px;
+		border-radius: 50%;
+	}
+	.myRank .untop-item .rankinfo{
+		float: right;
+		width: 60%;
+		height: 50px;
+		color: #fff;
+	}
+	.myRank .untop-item .rankinfo p{
+		margin-bottom: 15px;
+	}
+	
+	
+	
+	
+
+	/*选择栏*/
+	.selectbox{
+		margin-top: 50px;
+	}
+	.selectbox .seleleft{
+		float: left;
+		width: 50%;
+		font-size: 20px;
+		text-align: left;
+	}
+/*活动界面样式*/
+	/*活动类型选择栏*/
+	.action-bg{
+		background-color: #FAFAFA;
+	}
+	.classnav{
+		margin: 0 auto;
+		margin-top: 55px;
+		text-align:center; ;
+	}
+	.classnav .layui-form-item{
+		width: 98%;
+		margin: 0 auto;
+	}
+	/*活动列表部分*/
+    .red{
+        color:#C62F2F;
+    }
+	.acbox{
+		text-align: center;
+		margin-top: 5px;
+		margin-bottom: 20px;
+	}
+	.ac-list .aclist-box{
+		width: 98%;
+		border:1px solid #E1E1E2; 
+		border-top: none;
+		margin:0 auto;
+		box-shadow: 0 0 3px #eee;
+		margin-bottom: 10px;
+		background-color: #fff;
+	}
+	.ac-list .aclist-box a{
+		display: block;
+	}
+	.aclist-box-img{
+		float: left;
+		width: 40%;
+		margin-top: 20px;
+		margin-bottom: 20px;
+	}
+	.aclist-box-img img{
+		width: 130px;
+        height:90px;
+	}
+	.aclist-box-info{
+		float: left;
+		width: 60%;
+		text-align: left;
+		margin-bottom: 10px;
+	}
+	.aclist-box-info a{
+		font-weight: bold;
+		margin-top: 15px;
+	}
+	.aclist-box-info .actime,
+	.aclist-box-info .acendtime{
+		font-size: 12px;
+	}
+	.acbox-btn{
+		text-align: right;
+		margin-right: 10px;
+        margin-top:-30px;
+	}
+	.acbox-btn .btn{
+		background-color: #C62F2F;
+		color: #fff;
+		width: 85px;
+	}
+	.ac-bottom{
+		margin-top: -10px;
+		margin-bottom: 50px;
+	}
+
+/*活动详情界面样式*/
+	.acmore{
+		position: relative;
+	}
+	.acmore img{
+		width: 100%;
+		margin-top: 50px;
+	}
+	.acmore .acmore-class{
+		position: absolute;
+		top: 50px;
+		width: 100%;
+		color: #fff;
+		background-color: rgba(0, 0, 0, 0.7);
+		text-align: center;
+		line-height: 32px;
+	}
+	/*活动简介样式*/
+	.acmoreinfo .acmore-title{
+		border-bottom: 1px solid #eee;
+		padding:10px;
+	}
+	.acmoreinfo .acmore-title span {
+		text-align: left;
+		font-size: 1.6rem;
+		color: #666;
+	}
+	.acmoreinfo .acmore-title .acmore-userinfo{
+		background-image: url(../images/goin.png);
+		background-repeat: no-repeat;
+		background-position: 97% center;
+		background-size: 10px;
+		display: block;
+	}
+	.acmore-userinfo img{
+		width: 30px;
+        height:30px;
+		border-radius: 50%;
+	}
+	.acmore-userinfo i{
+		color: #eee;
+		margin-left: 10%;
+	}
+	.acmore-button{
+		margin-top: 10px;
+		text-align: center;
+	}
+	/*我要报名按钮，一直处于底端*/
+	.signnav{
+		position: fixed;
+		bottom: 0;
+		background-color:#C62F2F;
+		text-align: center;
+		width: 100%;
+		line-height: 50px;
+		z-index: 99;
+		display: block;
+	}
+	.signnav p{
+		color: #fff;
+		margin:0;
+		padding:0;
+	}
+	.acmore-content{
+		margin-bottom: 50px;
+	}
+	
+/*志愿者心得界面样式*/
+	.feelbg{
+		background-color: #eee;
+	}
+	.feel{
+		margin-bottom: 5px;
+		margin-top: 50px;
+	}
+	.feel .feel-list{
+		padding: 0;
+		
+	}
+	/*每个用户的心得*/
+	.feel .feel-list .feel-item{
+		overflow: hidden;
+		margin: 0 auto;
+		padding: 0 10px;
+		padding-top: 10px;
+		border-bottom: 1px solid #eee;
+		background-color: #fff;
+		margin-bottom: 5px;
+		box-shadow: 0 0 3px #eee;
+		width: 96%;
+		border-radius: 3px;
+		position: relative;
+	}
+	/*心得第一行,用户头像、姓名、发布时间*/
+	.feel-item .feel-item-info{
+		text-align: center;
+		padding: 0 5px;
+	}
+	.feel-item .feel-item-info .info-img{
+		float: left;
+	}
+	.feel-item .feel-item-info .info-img img{
+		width: 40px;
+        height:40px;
+		border-radius: 50%;
+	}
+	.feel-item .feel-item-info .info-name{
+		color: #333;
+		float: left;
+        text-align:left;
+	}
+	.feel-item .feel-item-info .info-name p{
+		margin-top: 10px;
+	}
+	.feel-item .feel-item-info .info-name .feeltime{
+		color: #666;
+		font-size: 10px;
+	}
+	.feel-item .layui-icon{
+		font-size: 1.7rem;
+		position: absolute;
+		right: 5%;
+		top: 20px;
+	}
+	.feel-item .layui-icon span{
+		color: #666;
+		padding-left: 3px;
+	}
+	.yiZan{
+		color: #C62F2F;
+	}
+
+	.fell-item-imgs {
+	  margin: 0 auto !important;
+	}
+	.fell-item-imgs .box {
+	  padding-bottom: 100%;
+	  width: 100%;
+	  height: 0;
+	  position: relative;
+	}
+	.fell-item-imgs .box img{
+		width: 95%;
+		height: 95%;
+		position: absolute;
+	}
+
+/*编写志愿者心得界面样式*/
+	/*导航条部分-不固定*/
+	header .writertop{
+		width: 100%;
+		height: 50px;
+		background-color: rgb(198,47,47);
+		text-align: center;
+		line-height: 50px;
+	}
+	header .writertop p{
+		color: #fff;
+		font-size: 1.6rem;
+	}
+	.write-back{
+	display: block;
+	position: fixed;
+	top: 12px;
+	left: 15px;
+	z-index: 9999;
+}
+	.write-back span{
+	font-size: 20px;
+	color: #fff;
+}
+
+	.write{
+		margin-top: 5px;
+	}
+	.write-btn{
+		margin: 0 auto;
+		text-align: center;
+		margin-top: 30px;
+	}
+	.write-btn .layui-btn{
+		background-color: #C62F2F;
+		width: 250px;
+		border-radius: 3px;
+	}
+
+/*我的志愿者心得界面样式*/
+	.myfeel{
+		margin-top: 60px;
+		margin-bottom: 10px;
+	}
+	.myfeel .myfeel-list{
+		padding: 0;
+	}
+	/*每个用户的心得*/
+	.myfeel .myfeel-list .myfeel-item{
+		overflow: hidden;
+		margin: 10px auto;
+		padding: 0 10px;
+		padding-top: 10px;
+		border: 1px solid #eee;
+		background-color: #fff;
+		margin-bottom: 5px;
+		box-shadow: 0 0 3px #eee;
+		width: 96%;
+		border-radius: 3px;
+		position: relative;
+	}
+	/*审核图标样式*/
+	.myfeel-item .feel-item-icon{
+		font-size: 70px;
+		position: absolute;
+		right: 40px;
+		color:#C62F2F;
+		transform:rotate(-30deg);
+		-ms-transform:rotate(-30deg); /* Internet Explorer */
+		-moz-transform:rotate(-30deg); /* Firefox */
+		-webkit-transform:rotate(-30deg); /* Safari 和 Chrome */
+		-o-transform:rotate(-30deg); /* Opera */
+	}
+	/*审核通过变绿*/
+	.icon-green{
+		color:#5FB878 !important ;
+	}
+	/*审核失败变灰色*/
+	.icon-gray{
+		color: #666 !important;	}
+	/*心得第一行,用户头像、姓名、发布时间*/
+	.myfeel-item .feel-item-info{
+		padding: 0 5px;
+	}
+	.myfeel-item .feel-item-info .info-img{
+		float: left;
+	}
+	.myfeel-item .feel-item-info .info-img img{
+		width: 50px;
+        height:50px;
+		border-radius: 50%;
+	}
+	.myfeel-item .feel-item-info .info-name{
+		color: #333;
+		float: left;
+	}
+	.myfeel-item .feel-item-info .info-name p{
+		margin-top: 10px;
+	}
+	.feel-item .feel-item-info .info-name .feeltime{
+		color: #666;
+		font-size: 10px;
+	}
+	.myfeel-item .layui-icon{
+		font-size: 1.5rem;
+		position: absolute;
+		right: 5%;
+		top: 20px;
+	}
+	.myfeel-item .layui-icon span{
+		color: #666;
+		padding-left: 3px;
+	}
+	/*心得内容*/
+	.fell-item-content{
+		padding: 10px;
+	}
+	
+/*发布活动界面*/
+.release{
+	margin: 0 auto;
+	margin-top: 60px;
+	width: 96%;
+}
+.release .btn-item{
+	margin-top: 20px;
+}
+.release .btn-item .lastbtn{
+	background-color: #C62F2F !important;
+}
+.release .btn-item .layui-btn-primary:hover{
+	border-color:#C62F2F ;
+}
+
+/*修改信息界面*/
+.reinfobox{
+	width: 96%;
+	margin: 0 auto;
+	margin-top: 10px;
+}
+.reinfobox-btn{
+	text-align: center;
+	margin-top: 40px;
+}
+.reinfobox .layui-btn{
+	background-color: #C62F2F;
+	width: 60%;
+}
+
+
+	/* 我的活动列表部分*/
+	.myacbox{
+		margin-top: 50px;
+		text-align: center;
+	}
+	.ac-list .aclist-box a{
+		display: block;
+        font-size:16px;
+	}
+	.aclist-box-img img{
+		width: 130px;
+	}
+	.aclist-box-info{
+		float: left;
+		width: 60%;
+		text-align: left;
+		margin-bottom: 10px;
+	}
+	.aclist-box-info a{
+		font-weight: bold;
+		margin-top: 15px;
+	}
+	.aclist-box-info .actime,
+	.aclist-box-info .acendtime{
+		font-size: 12px;
+	}
+	.ac-bottom{
+		margin-top: -10px;
+		margin-bottom: 50px;
+	}
+
+
+
+
+
+/*组件样式*/
+/*点击加载更多*/
+.addMore{
+	margin: 0 auto;
+	text-align: center;
+	margin-bottom: 60px;
+}
+/*返回顶部组件*/
+.topback{
+	position: fixed;
+	bottom: 60px;
+	right: 10px;
+}
+.topback .icon-less{
+	color: #fff;
+	font-size:32px;
+	background-color: rgba(0,0,0,0.2);
+}
+/*返回上一页组件*/
+.header-back{
+	display: block;
+	position: fixed;
+	top: 12px;
+	left: 15px;
+	z-index: 9999;
+}
+.header-back span{
+	font-size: 20px;
+	color: #fff;
+}
+/*分页组件*/
+.pages{
+	text-align: center;
+}
+/*右上角编辑志愿者心得按钮组件 */
+.writefeel{
+	position: fixed;
+	top: 12px;
+	right: 15px;
+	z-index: 9999;
+	color: #fff;
+}
+.writefeel span{
+	font-size: 20px;
+}
+.writefeel:hover,
+.writefeel:active,
+.writefeel:visited
+{
+	color: #eee;
+}
+
+.write-content{
+	position: relative;
+}
+.write-content textarea{
+	height: 300px;
+    font-size:16px;
+}
+
+.write-icon{
+	position: absolute;
+	left: 20px;
+	bottom: 20px;
+}
+
+/*layui框架选择从绿色变成其他颜色*/
+.layui-form-select dl dd.layui-this{
+	background-color: #C62F2F;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* 
+参考数据
+橙色：#ff9500
+淡红色：#ff3b30
+天蓝色（偏白）：#5ac8fa
+蓝色（正常）：#0071ff
+蓝色（偏紫）：#5856d6
+绿色（偏白）：#4cd964
+粉红色：#ff2d55
+背景灰色（淡）：#efeff4
+背景灰色（中）：#ceced2
+背景灰色（深）：#8e8e93
+黄色：#ffcc00*/

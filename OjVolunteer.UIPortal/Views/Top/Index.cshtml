@@ -1,0 +1,167 @@
+﻿@model OjVolunteer.Model.UserInfo
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>大学生志愿服务认证中心</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link href="~/Content/oj/css/bootstrap.css" rel="stylesheet" />
+    <link href="~/Content/layui/css/layui.css" rel="stylesheet" />
+    <link href="~/Content/oj/css/main.css" rel="stylesheet" />
+    <style>
+        .topBtn{
+            margin:0 auto;
+            background:none;
+            border:none;
+            margin-top:10px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="top">
+            <p>志愿者排行</p>
+        </nav>
+    </header>
+
+    <!-- 选择栏 -->
+    <form class="layui-form">
+        <div class="selectbox clearfix">
+            <div class="seleleft">
+                <select id="org" lay-verify="required" lay-filter="aihao">
+                    <option value="-1">全部</option>
+                    @{if (ViewBag.isLogin)
+        {
+                <option value="@Model.OrganizeInfoID">所属团队</option>} }
+                </select>
+            </div>
+            <div class="seleleft">
+                <select id="time" lay-verify="required" lay-filter="aihao">
+                    <option value="1">月</option>
+                    @*<option value="2">季</option>*@
+                    <option value="3">年</option>
+                    @*<option value="4">至今</option>*@
+                </select>
+            </div>
+        </div>
+    </form>
+    <div id="Top">
+
+    </div>
+
+    <!--显示该用户目前排行栏-->
+    @{ if (ViewBag.isLogin)
+        {
+            <div class="myRank">
+                <div class="untop-item clearfix">
+                    <p class="rank" id="rank">
+                    </p>
+                    <div class="untop-item-wrap">
+                        <img src="@Model.UserInfoIcon">
+                    </div>
+                    <div class="rankinfo">
+                        <p>@Model.UserInfoShowName</p>
+                        <span id="self"></span>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+
+    <!-- 返回上一层组件 -->
+    <a href="javascript:history.go(-1)" class="header-back">
+        <span class="glyphicon glyphicon-chevron-left"></span>
+    </a>
+    <script src="~/Content/oj/js/jquery-1.12.4.js"></script>
+    <script src="~/Content/layui/layui.all.js"></script>
+    <script src="~/Content/oj/js/main.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            GetActivityData(1, 5,-1, 1);
+            GetRank(0, -1, 1);
+        });
+
+        function GetActivityData(pageIndex, pageSize, orgId, timeId) {
+            $.post("/Top/ActivityData", { pageIndex: pageIndex, pageSize: pageSize, OrgId: orgId, TimeType: timeId }, function (data) {
+                $("#btnevent").remove();
+                if (data["msg"] == "success") {
+                    for (var i in data["data"]) {
+                        var temp = data["data"][i];
+                        if (i == 0 && pageIndex == 1) {
+                            var div = $("<div class='toplist'>");
+                            var div_div = $("<div class='toplist-userinfo'>");
+                            var a = $("<a href='/UserInfo/Other/?Id=" + temp.UserInfoID + "'></a>");
+                            var div_div_img = $("<img src='" + temp.Icon + "'>");
+                            var div_div_p = $("<p>" + temp.ShowName + "<br/>志愿者时长<span>" + temp.ActivityTime + "</span>小时</p>");
+                            a.append(div_div_img);
+                            div_div.append(a);
+                            div_div.append(div_div_p);
+                            div.append(div_div);
+                            $("#Top").append(div);
+                            $("#Top").append("<ul class='untop' id='ullist'></ul>");
+                        } else {
+                            var li = $("<li class='untop-item clearfix'>");
+                            var li_p = $("<p class='rank'>NO." + parseInt((parseInt(pageIndex) - 1) * parseInt(pageSize) + 1 + parseInt(i)) + "</p>");
+                            var a = $("<a href='/UserInfo/Other/?Id=" + temp.UserInfoID + "'></a>");
+                            var li_div = $("<div class='untop-item-wrap'><img src='" + temp.Icon + "'></div>");
+                            var li_p_2 = $("<div class='rankinfo'><p>" + temp.ShowName + "</p><span>志愿者时长：<i>" + temp.ActivityTime + "</i>小时</span></div>");
+                            li.append(li_p);
+                            a.append(li_div);
+                            li.append(a);
+                            li.append(li_p_2);
+                            li.append(a);
+                            $("#ullist").append(li);
+                        }
+                    }
+                    var btn_li = $("<li style='text-align:center;'></li>");
+                    var btn_input = $("<input type='button' id='btnevent' value='查看更多' class='topBtn'/>");
+                    pageIndex++;
+                    btn_input.attr("pageIndex", pageIndex);
+                    btn_li.append(btn_input);
+                    $("#ullist").append(btn_li);
+                    BindTopClickEvent();
+                } else {
+                    var btn_li = $("<li style='text-align:center;'></li>");
+                    btn_li.text("无新内容");
+                    $("#ullist").append(btn_li);
+                }
+            });
+        }
+
+        function BindTopClickEvent() {
+            $("#btnevent").click(function () {
+                var pageIndex = parseInt($("#btnevent").attr("pageIndex"));
+                var pageSize = 5;
+                var orgId = $("#org option:selected").val();
+                var timeId = $("#time option:selected").val();
+                GetActivityData(pageIndex,pageSize,orgId,timeId);
+            });
+        }
+
+        function GetRank(typeId, orgId, timeId) {
+            $.post("/Top/GetRank", { typeId: typeId, OrgId: orgId, TimeType: timeId }, function (data) {
+                if (data.Rank != 0) {
+                    $("#rank").html("NO." + data.Rank);
+                    if (typeId == 0) {
+                        $("#self").html("服务时长：<i>" + data.Num + "</i>小时");
+                    }
+                } else {
+                    $("#self").html("未上榜");
+                }
+            });
+        }
+        layui.use('form', function () {
+            var form1 = layui.form;
+            form1.on('select(aihao)', function (data) {
+                $("#Top").children().remove();
+                var pageIndex = 1;
+                var pageSize = 5;
+                var orgId = $("#org option:selected").val();
+                var timeId = $("#time option:selected").val();
+                GetActivityData(pageIndex, pageSize, orgId, timeId);
+                GetRank(0, orgId, timeId);
+            });
+        });
+    </script>
+</body>
+</html>

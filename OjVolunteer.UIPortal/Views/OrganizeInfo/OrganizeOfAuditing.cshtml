@@ -1,0 +1,245 @@
+﻿
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>大学生志愿服务认证中心</title>
+
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />
+    <link href="~/Content/bootstrap-table/bootstrap-table.css" rel="stylesheet" />
+    <link href="~/Content/layui/css/layui.css" rel="stylesheet" />
+
+
+    
+</head>
+<body>
+
+
+    <div id="toolbar" class="btn-group">
+        <button id="btn_agrees" type="button" class="btn btn-default">
+            <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>通过
+        </button>
+        <button id="btn_removes" type="button" class="btn btn-default">
+            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>删除
+        </button>
+    </div>
+    <div>
+        <table id="tb_organize"></table>
+    </div>
+
+    <script src="~/Content/oj/js/jquery-1.12.4.js"></script>
+    <script src="~/Scripts/bootstrap-table.js"></script>
+    <script src="~/Scripts/bootstrap.js"></script>
+
+    <script src="~/Content/bootstrap-table/bootstrap-table.js"></script>
+    <script src="~/Content/bootstrap-table/bootstrap-table-zh-CN.js"></script>
+    <script src="~/Scripts/datapattern.js"></script>
+    <script src="~/Content/layui/layui.all.js"></script>
+    <script src="~/Content/oj/js/admin.js"></script>
+    <script type="text/javascript">
+
+        var oTable;
+        $(function () {
+            //初始化表格
+            oTable = new TableInit();
+            oTable.Init();
+            $("#btn_agrees").click(function () {
+                agreeSelectClickEvent();
+            });
+            $("#btn_removes").click(function () {
+                removeSelectClickEvent();
+            });
+
+        });
+
+        var TableInit = function () {
+            var oTableInit = new Object();
+            //初始化Table
+            oTableInit.Init = function () {
+                $('#tb_organize').bootstrapTable('refresh', oTableInit.queryParams);
+                $('#tb_organize').bootstrapTable({
+                    contentType: "application/x-www-form-urlencoded",
+                    url: '/OrganizeInfo/GetAllOrganizeOfAuditing',
+                    method: 'post',
+                    toolbar: '#toolbar',
+                    striped: true,
+                    cache: false,
+                    pagination: true,
+                    queryParams: oTableInit.queryParam,
+                    sidePagination: "server",
+                    pageNumber: 1,
+                    pageSize: 10,
+                    pageList: [10, 20, 50],
+                    smartDisplay: false,
+                    showColumns: true,
+                    showRefresh: true,
+                    minimumCountColumns: 3,
+                    clickToSelect: true,
+                    uniqueId: "OrganizeInfoID",
+                    columns: [
+                        {
+                            field: 'checked',
+                            checkbox: true,
+                            align: 'center',
+                        },
+                        {
+                            field: 'OrganizeInfoLoginId',
+                            title: '团队登录名',
+                            width: '10%',
+                            align: 'center',
+                        },
+                        {
+                            field: 'OrganizeInfoShowName',
+                            title: '团队名称',
+                            visible: true,
+                            width: '10%',
+                            align: 'center',
+                        },
+                        {
+                            field: 'OrganizeInfoPeople',
+                            title: '负责人',
+                            width: '10%',
+                            align: 'center',
+                        },
+                        {
+                            field: 'OrganizeInfoPhone',
+                            title: '手机号',
+                            width: '10%',
+                            align: 'center',
+                        },
+                        {
+                            field: 'CreateTime',
+                            title: '申请时间',
+                            width: '20%',
+                            formatter: function (value, row, index) {
+                                return new Date(parseInt(value.replace("/Date(", "").replace(")/", ""), 10)).pattern("yyyy-MM-dd HH:mm");
+                            },
+                            align: 'center',
+                        },
+                        {
+                            field: 'operate',
+                            title: '操作',
+                            align: 'center',
+                            width: '25%',
+                            formatter: operateFormatter
+                        }
+                    ],
+                    onLoadSuccess: function (data) {
+
+                        $(".agreeLink").click(function () {
+                            agreeClickEvent($(this).attr("uid"));
+                            return false;
+                        });
+                        $(".opposeLink").click(function () {
+                            removeClickEvent($(this).attr("uid"));
+                            return false;
+                        })
+                    }
+                });
+            };
+            //得到查询的参数
+            oTableInit.queryParams = function (params) {
+                var temp = {  //这里的键的名字和控制器的变量名必须一直，这边改动，控制器也需要改成一样的
+                    limit: params.limit,  //页面大小
+                    offset: params.offset, //页码
+                };
+                return temp;
+            };
+            return oTableInit;
+        };
+        
+        //生成操作框图标
+        function operateFormatter(value, row, index) {
+            return [
+                '<a  href="javascript:void(0)" class="agreeLink" uid="' + row['OrganizeInfoID'] + '">',
+                '<i class="glyphicon glyphicon-ok"></i>&nbsp;&nbsp;<span>通过</span>',
+                '</a>&nbsp;&nbsp;&nbsp;&nbsp;',
+                '<a href="javascript:void(0)" class="opposeLink" uid="' + row['OrganizeInfoID'] + '">',
+                '<i class="glyphicon glyphicon-remove"></i>&nbsp;&nbsp;<span>删除</span></a>',
+            ].join('');
+        }
+
+        //批量通过
+        function agreeSelectClickEvent() {
+            var selectedRows = $('#tb_organize').bootstrapTable('getSelections', function (row) {
+                return row;
+            });
+            if (selectedRows.length <= 0) {
+                layer.alert("至少选中一个选项"); return; 
+            }
+            var ids = "";
+            for (var key in selectedRows) {
+                ids += selectedRows[key].OrganizeInfoID + ",";
+            }
+            ids = ids.substr(0, ids.length - 1);
+            $.post("/OrganizeInfo/EditOfList", { ids, ids }, function (data) {
+                if (data == "success") {
+                    oTable.Init();
+                    layer.alert("操作成功");
+                } else if (data == "null") {
+                    layer.alert("至少选择一列");
+                } else {
+                    layer.alert("操作失败,请稍后再试");
+                }
+            });
+        }
+
+        //单项通过事件
+        function agreeClickEvent(data) {
+            $.post("/OrganizeInfo/EditOfList", { ids: data }, function (data) {
+                if (data == "success") {
+                    oTable.Init();
+                    layer.alert("操作成功");
+                } else if (data == "null") {
+                    layer.alert("至少选择一列");
+                } else {
+                    layer.alert("操作失败,请稍后再试");
+                }
+            });
+        }
+
+        //批量删除
+        function removeSelectClickEvent() {
+            var selectedRows = $('#tb_organize').bootstrapTable('getSelections', function (row) {
+                return row;
+            });
+            if (selectedRows.length <= 0) {
+                layer.alert("至少选中一个选项");
+            }
+            var ids = "";
+            for (var key in selectedRows) {
+                ids += selectedRows[key].OrganizeInfoID + ",";
+            }
+            ids = ids.substr(0, ids.length - 1);
+            $.post("/OrganizeInfo/DeleteOfList", { ids, ids }, function (data) {
+                //初始化表格
+                oTable.Init();
+                if (data == "success") {
+                    layer.alert("删除成功");
+                } else if (data == "null") {
+                    layer.alert("至少选择一列");
+                } else {
+                    layer.alert("删除失败,请稍后再试");
+                }
+            });
+        }
+
+        //单项删除事件
+        function removeClickEvent(data) {
+            $.post("/OrganizeInfo/DeleteOfList", { ids: data }, function (data) {
+                oTable.Init();
+                if (data == "success") {
+                    layer.alert("删除成功");
+                } else if (data == "null") {
+                    layer.alert("至少选择一列");
+                } else {
+                    layer.alert("删除失败,请稍后再试");
+                }
+            })
+        }
+            
+
+    </script>
+</body>
+</html>
