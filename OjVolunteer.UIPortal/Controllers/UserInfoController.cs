@@ -92,13 +92,13 @@ namespace OjVolunteer.UIPortal.Controllers
             int offset = int.Parse(Request["offset"] ?? "0");
             int pageIndex = (offset / pageSize) + 1;
             UserQueryParam userQueryParam = new UserQueryParam();
-            if (!string.IsNullOrEmpty(Request["filter"]))
+            if (!string.IsNullOrEmpty(Request["filter"]))  //过滤
             {
                 userQueryParam = Newtonsoft.Json.JsonConvert.DeserializeObject<UserQueryParam>(Request["filter"]);
             }
             userQueryParam.PageSize = pageSize;
             userQueryParam.PageIndex = pageIndex;
-            if (LoginOrganize.OrganizeInfoManageId != null)
+            if (LoginOrganize.OrganizeInfoManageId != null)  //判断是不是拥有最高权限
             {
                 userQueryParam.OrganizeInfoID = LoginOrganize.OrganizeInfoID;
                 userQueryParam.isSuper = false;
@@ -108,7 +108,7 @@ namespace OjVolunteer.UIPortal.Controllers
                 userQueryParam.isSuper = true;
             }
             userQueryParam.Total = 0;
-
+            //显示各个人的信息
             var pageData = UserInfoService.LoadPageData(userQueryParam).Select(u => new
             {
                 u.UserInfoID,
@@ -159,7 +159,7 @@ namespace OjVolunteer.UIPortal.Controllers
             int offset = int.Parse(Request["offset"] ?? "0");
             int pageIndex = (offset / pageSize) + 1;
 
-            if (LoginOrganize.OrganizeInfoManageId != null)
+            if (LoginOrganize.OrganizeInfoManageId != null)//判断是不是拥有最高权限
             {
                 var pageData = UserInfoService.GetPageEntities(pageSize, pageIndex, out int total, o => o.Status == delAuditing && o.OrganizeInfoID == LoginOrganize.OrganizeInfoID, u => u.UserInfoID, true)
                 .Select(u => new

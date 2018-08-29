@@ -152,6 +152,8 @@ namespace OjVolunteer.UIPortal.Controllers
         #endregion
 
         #region ValidateName 验证用户名是否重复
+
+        //注册时进行判断
         public Boolean ValidateName( string loginId)
         {
             bool flag = false;
@@ -167,6 +169,7 @@ namespace OjVolunteer.UIPortal.Controllers
             return flag;
         }
 
+        //返回页面
         public ActionResult ValName()
         {
             string loginId = Request["name"];

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
+/*异常日志过滤器属性*/
 namespace OjVolunteer.UIPortal.OtherClass
 {
     public class ExceptionLogFilterAttribute: HandleErrorAttribute
