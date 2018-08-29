@@ -7,7 +7,7 @@ using System.Web.Mvc;
 
 namespace OjVolunteer.UIPortal.Filters
 {
-    public class ActionAuthenticationAttribute : ActionFilterAttribute
+    public class ActionAuthenticationAttribute : ActionFilterAttribute //权限
     {
         /// <summary>
         /// 团队是否可以执行

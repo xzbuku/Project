@@ -3,7 +3,7 @@ using System.Web.Optimization;
 
 namespace OjVolunteer.UIPortal
 {
-    public class BundleConfig
+    public class BundleConfig//用来将js和css进行压缩（多个文件可以打包成一个文件）
     {
         // 有关捆绑的详细信息，请访问 https://go.microsoft.com/fwlink/?LinkId=301862
         public static void RegisterBundles(BundleCollection bundles)

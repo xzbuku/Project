@@ -9,7 +9,7 @@ namespace OjVolunteer.UIPortal
 {
     public class RouteConfig
     {
-        public static void RegisterRoutes(RouteCollection routes)
+        public static void RegisterRoutes(RouteCollection routes)//路由
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 

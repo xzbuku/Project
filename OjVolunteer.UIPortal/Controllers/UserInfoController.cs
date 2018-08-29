@@ -269,7 +269,7 @@ namespace OjVolunteer.UIPortal.Controllers
 
         #region 团队创建用户
         [ActionAuthentication(AbleOrganize = true, AbleUser = false)]
-        public ActionResult Create()
+        public ActionResult Create() //给出默认/可选择选项
         {
             var allMajor = MajorService.GetEntities(u => u.Status == delNormal).AsQueryable();
             ViewBag.MajorID = (from u in allMajor select new SelectListItem() { Selected = false, Text = u.MajorName, Value = u.MajorID + "" }).ToList();
@@ -292,7 +292,7 @@ namespace OjVolunteer.UIPortal.Controllers
 
         [HttpPost]
         [ActionAuthentication(AbleOrganize = true, AbleUser = false)]
-        public JsonResult Create(UserInfo userInfo)
+        public JsonResult Create(UserInfo userInfo) //判断信息填写
         {
             String msg = "fail";
             Regex regex1 = new Regex(@"^[0-9]{6,12}$");
@@ -306,7 +306,7 @@ namespace OjVolunteer.UIPortal.Controllers
             }
             if (ModelState.IsValid)
             {
-                string pwd = "000000";
+                string pwd = "000000"; //初始密码
                 userInfo.UserInfoPwd = Common.Encryption.MD5Helper.Get_MD5(pwd);
                 userInfo.Status = delNormal;
 
@@ -346,7 +346,7 @@ namespace OjVolunteer.UIPortal.Controllers
         /// </summary>
         /// <returns></returns>
         [ActionAuthentication(AbleOrganize = false, AbleUser = true)]
-        public ActionResult Self()
+        public ActionResult Self()  //显示自己的个人中心
         {
             var duration = UserDurationService.GetEntities(u => u.UserDurationID == LoginUser.UserInfoID).FirstOrDefault();
             ViewBag.Total = duration.UserDurationTotal;
@@ -360,7 +360,7 @@ namespace OjVolunteer.UIPortal.Controllers
         }
 
         [ActionAuthentication(AbleOrganize = false, AbleUser = true)]
-        public ActionResult Other(int Id)
+        public ActionResult Other(int Id) //查看他人的个人中心
         {
             if (Id == LoginUser.UserInfoID)
             {

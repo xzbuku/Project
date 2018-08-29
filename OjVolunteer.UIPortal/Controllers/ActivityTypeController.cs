@@ -19,7 +19,7 @@ namespace OjVolunteer.UIPortal.Controllers
         {
             return View(LoginOrganize);
         }
-
+        //增删改查活动类型
         #region Query
 
         [HttpPost]
