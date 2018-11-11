@@ -173,7 +173,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.Config" />
+    <None Include="App.Config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <EntityDeploy Include="EFDataModel.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>EFDataModel.Designer.cs</LastGenOutput>

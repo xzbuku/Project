@@ -215,7 +215,8 @@ namespace OjVolunteer.UIPortal.Controllers
             }
             catch
             {
-                return Json(new { msg = "fail" }, JsonRequestBehavior.AllowGet);
+                
+                 return Json(new { msg = "fail" }, JsonRequestBehavior.AllowGet);
             }
 
             if (ModelState.IsValid)
@@ -223,12 +224,14 @@ namespace OjVolunteer.UIPortal.Controllers
                 if (string.IsNullOrEmpty(activity.ActivityIcon))
                 {
                     activity.ActivityIcon = System.Configuration.ConfigurationManager.AppSettings["DefaultActivityIconPath"];
+                    
                 }
                 if (LoginOrganize != null)//组织注册
                 {
                     activity.ActivityApplyOrganizeID = LoginOrganize.OrganizeInfoID;
                     //activity.Status = LoginOrganize.OrganizeInfoManageId == null ? delUndone : delAuditing;
                     activity.Status = activity.ActivityTypeID == 1 ? (LoginOrganize.OrganizeInfoManageId == null? delUndone:delAuditing) : delUndone;
+                    
                 }
                 else//
                 {
@@ -238,17 +241,21 @@ namespace OjVolunteer.UIPortal.Controllers
                     activity.ActivityDepartment = ",";
                     activity.ActivityMajor = ",";
                     activity.ActivityPolitical = ",";
+                    
                 }
                 activity.ActivityClicks = 0;
                 activity.CreateTime = DateTime.Now;
                 activity.ModfiedOn = activity.CreateTime;
-
+                
                 if (ActivityService.AddActivity(activity))
-                {
-                    return Json(new { msg = "success" }, JsonRequestBehavior.AllowGet);
-                }
+                  {
+                      return Json(new { msg = "success" }, JsonRequestBehavior.AllowGet);
+                  }
+                
+
             }
-            return Json(new { msg = "fail" }, JsonRequestBehavior.AllowGet);
+
+            return Json(new { msg = "fail"}, JsonRequestBehavior.AllowGet);
         }
         #endregion
 
